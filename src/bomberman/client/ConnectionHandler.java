@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import bomberman.shared.GameCommand;
 
 public class ConnectionHandler
 {
@@ -54,5 +55,16 @@ public class ConnectionHandler
 		}
 	}
 
-
+	public void sendCommandToServer (GameCommand gc)
+	{
+		try
+		{
+			channelToServer.writeObject (gc);
+		}
+		catch (IOException ioe)
+		{
+			ioe.printStackTrace ();
+		}
+		return;
+	}
 }

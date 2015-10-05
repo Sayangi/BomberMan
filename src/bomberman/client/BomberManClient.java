@@ -109,6 +109,7 @@ public class BomberManClient extends Application
 					default:
 						break;
 				}
+				connectionHandler.sendCommandToServer (gameCommand);
 				// System.out.println (pressedButton.toString () + " was pressed");
 				// event.consume ();
 
