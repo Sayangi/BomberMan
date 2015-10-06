@@ -7,11 +7,11 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-public class ConnectionHandler {
-
+public class ConnectionHandler
+{
 	private String host;
 	private int port;
-	private ServerSocket mySocket;
+	private ServerSocket serverSocket;
 	private Socket clientSocket;
 	private ObjectInputStream channelFromClient;
 	private ObjectOutputStream channelToClient;
@@ -22,15 +22,13 @@ public class ConnectionHandler {
 		this.port = port;
 	}
 
-
-
 	public void close ()
 	{
 		try
 		{
-			if (mySocket != null)
+			if (serverSocket != null)
 			{
-				mySocket.close ();
+				serverSocket.close ();
 			}
 		}
 		catch (IOException ioe)
@@ -39,4 +37,33 @@ public class ConnectionHandler {
 		}
 	}
 
+	public void createServer ()
+	{
+		try
+		{
+			serverSocket = new ServerSocket (port);
+		}
+		catch (IOException ioe)
+		{
+			ioe.printStackTrace ();
+		}
+
+		return;
+	}
+
+	public Socket accept ()
+	{
+		Socket client = null;
+
+		try
+		{
+			client = serverSocket.accept ();
+		}
+		catch (IOException ioe)
+		{
+			ioe.printStackTrace ();
+		}
+
+		return client;
+	}
 }

@@ -26,9 +26,6 @@ public class ConnectionHandler
 		try
 		{
 			socketToServer = new Socket (host, port);
-			channelFromServer = new ObjectInputStream (socketToServer.getInputStream ());
-			channelToServer = new ObjectOutputStream (socketToServer.getOutputStream ());
-
 		}
 		catch (UnknownHostException uhe)
 		{
@@ -55,11 +52,42 @@ public class ConnectionHandler
 		}
 	}
 
-	public void sendCommandToServer (GameCommand gc)
+	public void setStreams ()
 	{
 		try
 		{
+			channelFromServer = new ObjectInputStream (socketToServer.getInputStream ());
+			channelToServer = new ObjectOutputStream (socketToServer.getOutputStream ());
+		}
+		catch (IOException ioe)
+		{
+			ioe.printStackTrace ();
+		}
+
+		return;
+	}
+
+	public void sendCommandToServer (GameCommand gc)
+	{
+		System.out.println ("Channel: " + channelToServer); // XXX DEBUG
+		try
+		{
 			channelToServer.writeObject (gc);
+			channelToServer.flush ();
+		}
+		catch (IOException ioe)
+		{
+			ioe.printStackTrace ();
+		}
+		return;
+	}
+
+	public void sendCommandToServer (String str)
+	{
+		try
+		{
+			channelToServer.writeObject (str);
+			channelToServer.flush ();
 		}
 		catch (IOException ioe)
 		{
