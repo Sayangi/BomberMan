@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 public class BomberManClient extends Application
 {
 	private final String HOST_NAME = "127.0.0.1";
-	private final int PORT_NAME = 2222;
+	private final int PORT_NUMBER = 2222;
 
 	private AnchorPane root;
 	private Stage mainStage;
@@ -25,7 +25,12 @@ public class BomberManClient extends Application
 
 	public static void main (String [] args)
 	{
-		launch (args);
+		// launch (args);
+
+		// CLI Version
+		BomberManClient cliClient = new BomberManClient ();
+		cliClient.cliStart ();
+
 
 		return;
 	}
@@ -38,10 +43,42 @@ public class BomberManClient extends Application
 		initClientLayout ();
 		setGameMovementKeys ();
 		setupData ();
-		setupConnection (HOST_NAME, PORT_NAME);
+		// setupConnection (HOST_NAME, PORT_NUMBER); // FIXME Thread-problems
+		// setupStreams (); // FIXME Thread-problems
 
 		mainStage.setTitle ("BomberMan Client");
 		mainStage.show ();
+
+
+
+		/*Thread netSetup = new Thread (new Runnable ()
+		{
+			@Override
+			public void run ()
+			{
+				try
+				{
+					setupConnection (HOST_NAME, PORT_NAME);
+					wait ();
+				}
+				catch (InterruptedException ie)
+				{
+					ie.printStackTrace ();
+				}
+			}
+		});
+		netSetup.start ();
+
+		Thread streamSetup = new Thread (new Runnable ()
+		{
+			@Override
+			public void run ()
+			{
+				setupStreams ();
+				notify ();
+			}
+		});
+		streamSetup.start ();*/
 
 		return;
 	}
@@ -132,6 +169,26 @@ public class BomberManClient extends Application
 	{
 		connectionHandler = new ConnectionHandler (host, port);
 		connectionHandler.connect ();
+
+		return;
+	}
+
+	private void setupStreams ()
+	{
+		connectionHandler.setStreams ();
+
+		return;
+	}
+
+	private void cliStart ()
+	{
+		System.out.println ("Connecting to " + HOST_NAME + " at " + PORT_NUMBER);
+		setupData ();
+		setupConnection (HOST_NAME, PORT_NUMBER);
+		System.out.println ("***"); // XXX Debug
+		setupStreams ();
+		String test = "BomberMan";
+		connectionHandler.sendCommandToServer (test);
 
 		return;
 	}
