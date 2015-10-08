@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 
 public class BomberManClient extends Application
 {
-	private final String HOST_NAME = "127.0.0.1";
+	private final String HOST_NAME = "localhost";
 	private final int PORT_NUMBER = 2222;
 
 	private AnchorPane root;
@@ -25,6 +25,8 @@ public class BomberManClient extends Application
 
 	public static void main (String [] args)
 	{
+		// GUI version
+		// FIXME Change Thread to Task
 		// launch (args);
 
 		// CLI Version

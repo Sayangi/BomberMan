@@ -30,9 +30,11 @@ public class BomberManServer extends Application
 		connectionHandler = new ConnectionHandler (null, PORT_NUMBER);
 		connectionHandler.createServer ();
 		toClient = connectionHandler.accept ();
-		System.out.println ("Client connected from " + toClient.getLocalAddress ());
+		System.out.println ("Client connected from " + toClient.getLocalSocketAddress ());
 		Thread service = new ServerService (toClient, resourceHandler);
 		service.start ();
+
+		return;
 	}
 
 	@Override

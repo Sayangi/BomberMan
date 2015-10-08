@@ -39,15 +39,15 @@ public class ServerService extends Thread
 		Object inResult = null;
 		try
 		{
-			channelFromClient = new ObjectInputStream (client.getInputStream ());
 			channelToClient = new ObjectOutputStream (client.getOutputStream ());
+			channelFromClient = new ObjectInputStream (client.getInputStream ());
 		}
 		catch (IOException ioe)
 		{
 			ioe.printStackTrace ();
 		}
 
-		while (isLocked)
+		while (/* isLocked */ client.isClosed () == false) // FIXME Change to something better...
 		{
 			try
 			{
