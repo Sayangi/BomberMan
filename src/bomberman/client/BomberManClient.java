@@ -1,8 +1,11 @@
 package bomberman.client;
 
 import java.io.IOException;
+
+import bomberman.shared.GameActions;
 import bomberman.shared.GameCommand;
 import javafx.application.Application;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -27,12 +30,11 @@ public class BomberManClient extends Application
 	{
 		// GUI version
 		// FIXME Change Thread to Task
-		// launch (args);
+		launch (args);
 
 		// CLI Version
-		BomberManClient cliClient = new BomberManClient ();
-		cliClient.cliStart ();
-
+		// BomberManClient cliClient = new BomberManClient ();
+		// cliClient.cliStart ();
 
 		return;
 	}
@@ -48,39 +50,22 @@ public class BomberManClient extends Application
 		// setupConnection (HOST_NAME, PORT_NUMBER); // FIXME Thread-problems
 		// setupStreams (); // FIXME Thread-problems
 
+		Task <Void> socketConnectTask = new Task <Void> ()
+		{
+			@Override
+			protected Void call () throws Exception
+			{
+				setupConnection (HOST_NAME, PORT_NUMBER);
+				setupStreams ();
+
+				return null;
+			}
+		};
+		Thread socketConnectThread = new Thread (socketConnectTask);
+		socketConnectThread.start ();
+
 		mainStage.setTitle ("BomberMan Client");
 		mainStage.show ();
-
-
-
-		/*Thread netSetup = new Thread (new Runnable ()
-		{
-			@Override
-			public void run ()
-			{
-				try
-				{
-					setupConnection (HOST_NAME, PORT_NAME);
-					wait ();
-				}
-				catch (InterruptedException ie)
-				{
-					ie.printStackTrace ();
-				}
-			}
-		});
-		netSetup.start ();
-
-		Thread streamSetup = new Thread (new Runnable ()
-		{
-			@Override
-			public void run ()
-			{
-				setupStreams ();
-				notify ();
-			}
-		});
-		streamSetup.start ();*/
 
 		return;
 	}
@@ -122,33 +107,35 @@ public class BomberManClient extends Application
 			public void handle (KeyEvent event)
 			{
 				KeyCode pressedButton = event.getCode ();
+				String remark = "Local: ";
 
 				switch (pressedButton)
 				{
 					case W:
-						gameCommand.setCommand (GameCommand.MOVEMENT_UP);
-						System.out.println ("UP");
+						gameCommand.setCommand (GameActions.MOVEMENT_UP);
+						System.out.println (remark + "UP");
 						break;
 
 					case A:
-						gameCommand.setCommand (GameCommand.MOVEMENT_LEFT);
-						System.out.println ("LEFT");
+						gameCommand.setCommand (GameActions.MOVEMENT_LEFT);
+						System.out.println (remark + "LEFT");
 						break;
 
 					case S:
-						gameCommand.setCommand (GameCommand.MOVEMENT_DOWN);
-						System.out.println ("DOWN");
+						gameCommand.setCommand (GameActions.MOVEMENT_DOWN);
+						System.out.println (remark + "DOWN");
 						break;
 
 					case D:
-						gameCommand.setCommand (GameCommand.MOVEMENT_RIGHT);
-						System.out.println ("RIGHT");
+						gameCommand.setCommand (GameActions.MOVEMENT_RIGHT);
+						System.out.println (remark + "RIGHT");
 						break;
 
 					default:
 						break;
 				}
-				connectionHandler.sendCommandToServer (gameCommand);
+				System.out.println ("Sent command is: " + gameCommand.getCommand ());
+				connectionHandler.sendCommandToServer (gameCommand.getCommand ());
 				// System.out.println (pressedButton.toString () + " was pressed");
 				// event.consume ();
 
@@ -162,7 +149,7 @@ public class BomberManClient extends Application
 
 	private void setupData ()
 	{
-		gameCommand = new GameCommand (GameCommand.NO_ACTION);
+		gameCommand = new GameCommand (GameActions.NO_ACTION);
 
 		return;
 	}

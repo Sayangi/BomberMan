@@ -1,7 +1,6 @@
 package bomberman.client;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -70,7 +69,7 @@ public class ConnectionHandler
 
 	public void sendCommandToServer (GameCommand gc)
 	{
-		System.out.println ("Channel: " + channelToServer); // XXX DEBUG
+		System.out.println ("Channel: " + channelToServer.toString ()); // XXX DEBUG
 		try
 		{
 			channelToServer.writeObject (gc);
@@ -78,6 +77,14 @@ public class ConnectionHandler
 		}
 		catch (IOException ioe)
 		{
+			try
+			{
+				socketToServer.close ();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace ();
+			}
 			ioe.printStackTrace ();
 		}
 		return;

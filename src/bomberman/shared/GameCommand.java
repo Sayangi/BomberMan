@@ -1,14 +1,16 @@
 package bomberman.shared;
 
-public class GameCommand
+import java.io.Serializable;
+
+public class GameCommand implements Serializable
 {
-	public static final String NO_ACTION = "NULL";
-	public static final String MOVEMENT_UP = "UP";
-	public static final String MOVEMENT_DOWN = "DOWN";
-	public static final String MOVEMENT_LEFT = "LEFT";
-	public static final String MOVEMENT_RIGHT = "RIGHT";
+	private static final long serialVersionUID = 42L;
 
 	private String command;
+
+	public GameCommand ()
+	{
+	}
 
 	public GameCommand (String command)
 	{

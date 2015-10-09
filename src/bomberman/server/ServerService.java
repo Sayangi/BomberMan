@@ -14,6 +14,13 @@ public class ServerService extends Thread
 	private boolean isLocked;
 	private ResourceHandler resourceHandler;
 
+	public ServerService (Socket client, ResourceHandler resourceHandler)
+	{
+		this.client = client;
+		this.isLocked = true;
+		this.resourceHandler = resourceHandler;
+	}
+
 	public boolean isLocked ()
 	{
 		return isLocked;
@@ -22,21 +29,25 @@ public class ServerService extends Thread
 	public void setLocked (boolean isLocked)
 	{
 		this.isLocked = isLocked;
-	}
 
-	public ServerService (Socket client, ResourceHandler resourceHandler)
-	{
-		this.client = client;
-		this.isLocked = true;
-		this.resourceHandler = resourceHandler;
+		return;
 	}
 
 	@Override
 	public void run ()
 	{
+		System.out.println ("Thread ID: " + this.toString ());
+		service ();
+
+		return;
+	}
+
+	private void service ()
+	{
 		ObjectInputStream channelFromClient = null;
 		ObjectOutputStream channelToClient = null;
 		Object inResult = null;
+
 		try
 		{
 			channelToClient = new ObjectOutputStream (client.getOutputStream ());
@@ -47,7 +58,7 @@ public class ServerService extends Thread
 			ioe.printStackTrace ();
 		}
 
-		while (/* isLocked */ client.isClosed () == false) // FIXME Change to something better...
+		while (isLocked)
 		{
 			try
 			{
@@ -55,16 +66,21 @@ public class ServerService extends Thread
 				if (inResult instanceof GameCommand)
 				{
 					GameCommand gc = (GameCommand) inResult;
-					Image outResult = process (gc);
-					if (outResult != null)
+					// Image outResult = process (gc);
+					String response = gc.getCommand ();
+					System.out.println ("Msg. from client: " + response);
+					channelToClient.writeObject (response);
+
+					/*if (outResult != null)
 					{
-						channelToClient.writeObject (outResult);
-					}
+						// channelToClient.writeObject (outResult); // XXX
+					}*/
 				}
 				if (inResult instanceof String)
 				{
 					String msg = (String) inResult;
 					System.out.println ("Msg. from client: " + msg);
+					channelToClient.writeObject (msg);
 				}
 			}
 			catch (ClassNotFoundException cnfe)
@@ -73,6 +89,15 @@ public class ServerService extends Thread
 			}
 			catch (IOException ioe)
 			{
+				try
+				{
+					isLocked = false;
+					client.close ();
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace ();
+				}
 				ioe.printStackTrace ();
 			}
 		}
