@@ -103,4 +103,28 @@ public class ConnectionHandler
 		}
 		return;
 	}
+
+	public String receiveStringMessageFromServer ()
+	{
+		String result = null;
+
+		try
+		{
+			Object in = channelFromServer.readObject ();
+			if (in instanceof String)
+			{
+				result = (String) in;
+			}
+		}
+		catch (ClassNotFoundException cnfe)
+		{
+			cnfe.printStackTrace ();
+		}
+		catch (IOException ioe)
+		{
+			ioe.printStackTrace ();
+		}
+
+		return result;
+	}
 }

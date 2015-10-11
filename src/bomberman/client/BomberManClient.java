@@ -29,7 +29,6 @@ public class BomberManClient extends Application
 	public static void main (String [] args)
 	{
 		// GUI version
-		// FIXME Change Thread to Task
 		launch (args);
 
 		// CLI Version
@@ -47,8 +46,6 @@ public class BomberManClient extends Application
 		initClientLayout ();
 		setGameMovementKeys ();
 		setupData ();
-		// setupConnection (HOST_NAME, PORT_NUMBER); // FIXME Thread-problems
-		// setupStreams (); // FIXME Thread-problems
 
 		Task <Void> socketConnectTask = new Task <Void> ()
 		{
@@ -138,6 +135,8 @@ public class BomberManClient extends Application
 				connectionHandler.sendCommandToServer (gameCommand.getCommand ());
 				// System.out.println (pressedButton.toString () + " was pressed");
 				// event.consume ();
+				String result = connectionHandler.receiveStringMessageFromServer ();
+				System.out.println ("Received command is: " + result);
 
 				return;
 			}
@@ -169,15 +168,19 @@ public class BomberManClient extends Application
 		return;
 	}
 
+	@SuppressWarnings ("unused")
 	private void cliStart ()
 	{
 		System.out.println ("Connecting to " + HOST_NAME + " at " + PORT_NUMBER);
 		setupData ();
 		setupConnection (HOST_NAME, PORT_NUMBER);
-		System.out.println ("***"); // XXX Debug
 		setupStreams ();
 		String test = "BomberMan";
 		connectionHandler.sendCommandToServer (test);
+		String echo = connectionHandler.receiveStringMessageFromServer ();
+		System.out.println ("Received from server: " + echo);
+		// Why is it hanging here?
+		connectionHandler.close ();
 
 		return;
 	}
