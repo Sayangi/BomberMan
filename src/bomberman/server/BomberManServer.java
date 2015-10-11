@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 
 public class BomberManServer extends Application
 {
-	private final int PORT_NUMBER = 2222;
+	private final int PORT_NUMBER = 11000;
 	private ConnectionHandler connectionHandler;
 	private ResourceHandler resourceHandler;
 	private Socket toClient;

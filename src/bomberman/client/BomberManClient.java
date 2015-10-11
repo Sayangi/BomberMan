@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 public class BomberManClient extends Application
 {
 	private final String HOST_NAME = "localhost";
-	private final int PORT_NUMBER = 2222;
+	private final int PORT_NUMBER = 11000;
 
 	private AnchorPane root;
 	private Stage mainStage;
