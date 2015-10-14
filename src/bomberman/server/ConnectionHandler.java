@@ -17,6 +17,7 @@ public class ConnectionHandler
 
 	public ConnectionHandler (String host, int port)
 	{
+		this.clientSocket = null;
 		this.host = host;
 		this.port = port;
 	}
@@ -52,17 +53,15 @@ public class ConnectionHandler
 
 	public Socket accept ()
 	{
-		Socket client = null;
-
 		try
 		{
-			client = serverSocket.accept ();
+			clientSocket = serverSocket.accept ();
 		}
 		catch (IOException ioe)
 		{
 			ioe.printStackTrace ();
 		}
 
-		return client;
+		return clientSocket;
 	}
 }
